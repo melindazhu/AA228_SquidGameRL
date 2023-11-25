@@ -27,3 +27,5 @@ Formulate the problem as a Markov Decision Process:
 - **reward** = 1 if whole bridge is traversed, 0 otherwise
 - **action** = moving to next adjacent position or the far diagonal position
 - **state** = position of the agent on the glass bridge grid
+
+This problem demonstrates the Markov property; i.e. the probability of receiving reward only depends on the current state, not on the previous sequence of states.

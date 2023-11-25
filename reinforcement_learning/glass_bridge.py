@@ -8,7 +8,8 @@ ACTION_RIGHT = 0
 ACTION_DIAGONAL = 1
 
 MAP = {
-    "5x2": ["SO--G", "--OO-"]
+    "5x2": ["SO--G", "--OO-"],
+    "8x2": ["SO--O-O-", "--OO-O-G"]
 }
 
 class GlassBridgeEnv(discrete.DiscreteEnv):
@@ -23,7 +24,7 @@ class GlassBridgeEnv(discrete.DiscreteEnv):
     Follows the class framework of OpenAI Gym environments.
     """
     def __init__(self):
-        bridge_map = MAP["5x2"]
+        bridge_map = MAP["8x2"]
         self.bridge_map = bridge_map = np.asarray(bridge_map, dtype="c")
         self.n_rows, self.n_cols = n_rows, n_cols = bridge_map.shape
         self.possible_rewards = (0, 1)
@@ -41,7 +42,7 @@ class GlassBridgeEnv(discrete.DiscreteEnv):
 
         # return the state (i.e. position on the bridge) specified by (row, col)
         def to_s(row, col):
-            return row * n_rows + col
+            return row * n_cols + col
 
         # return the new (rol, col) after an action is performed
         def inc(row, col, action):
@@ -71,8 +72,9 @@ class GlassBridgeEnv(discrete.DiscreteEnv):
                     if curr_letter in b"G-": # reached the end of bridge
                         known_transitions.append((1.0, s, 0, True)) # (prob, s_prime, r, done)
                     else:
-                        known_transitions.append((1.0, *update_probability_matrix(row, col, a)))
-        print(f"known transitions: {known_transitions}")
+                        known_transitions.append((0.8, *update_probability_matrix(row, col, a)))
+                        known_transitions.append((0.2, *update_probability_matrix(row, col, (a+3)%2)))
+        # print(f"known transitions: {known_transitions}")
         super(GlassBridgeEnv, self).__init__(n_states, n_actions, T, initialize_states)
 
     def render(self):
@@ -90,17 +92,20 @@ class GlassBridgeEnv(discrete.DiscreteEnv):
         outfile.write("\n".join("".join(line) for line in bridge_map) + "\n")
     
 
+# for testing only; this only gets run when we run glass_bridge.py as a standalone script
 def main(): 
     # this works for one fixed-size grid, WILL CHANGE LATER (11/25 mz)
     env = GlassBridgeEnv()
-    for i_episode in range(3): # number of trials we want to try the game
+    for i_episode in range(5): # number of trials we want to try the game
         newstate = env.reset()
         for t in range(10):
-            env.render()
-            print(newstate)
-            action = env.action_space.sample()
+            env.render() # displays the current bridge environment and the current state
+            # print(newstate)
+            action = env.action_space.sample() # pick a random action
             newstate, reward, done, info = env.step(action)
             if done:
+                if reward:
+                    print("Crossed the bridge! Received reward of 1.")
                 print("Trial finished after {} timesteps".format(t+1))
                 break
     env.close()

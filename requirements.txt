@@ -1,3 +1,5 @@
 gym==0.19.0
 scipy==1.11.4
 numpy==1.26.2
+ipython
+tqdm
