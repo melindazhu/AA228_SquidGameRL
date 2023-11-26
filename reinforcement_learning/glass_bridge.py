@@ -106,6 +106,8 @@ def main():
             if done:
                 if reward:
                     print("Crossed the bridge! Received reward of 1.")
+                if not reward:
+                    print("Oops! I've fallen!")
                 print("Trial finished after {} timesteps".format(t+1))
                 break
     env.close()
