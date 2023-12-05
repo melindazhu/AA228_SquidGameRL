@@ -10,6 +10,29 @@ from IPython.display import clear_output
 from tqdm import tqdm
 from typing import Optional
 
+def softmax_exploration(Q, state, temperature):
+    action_values = Q[state, :]
+    action_probabilities = np.exp(action_values / temperature) / np.sum(np.exp(action_values / temperature))
+    action = np.random.choice(len(action_probabilities), p=action_probabilities)
+    return action
+
+
+def posterior_sampling_exploration(Q, state, noise=0.1, num_samples=2):
+    num_actions = Q.shape[1]
+
+    # Draw samples from the posterior distribution for each action
+    q_samples = np.random.normal(Q[state, :], noise, size=(num_samples, num_actions))
+    # Assuming Q[state, :, 0] is mean and Q[state, :, 1] is standard deviation
+
+    # Calculate the mean Q-value for each action across the samples
+    mean_q_values = np.mean(q_samples, axis=0)
+
+    # Choose the action with the highest mean Q-value
+    action = np.argmax(mean_q_values)
+
+    return action
+
+
 def bellman_update(
     Q: np.ndarray,
     alpha: float,
@@ -39,6 +62,10 @@ def run_q_learning(
                 a = glass_bridge.action_space.sample()
             else:
                 a = np.argmax(Q[s,:])
+        elif exploration_strategy == "softmax":
+            a = softmax_exploration(Q, s, temperature=100)
+        elif exploration_strategy == "posterior-sampling":
+            a = posterior_sampling_exploration(Q, s, noise=0.1, num_samples=2)
         else: # "q-random"
             a = glass_bridge.action_space.sample() # pick completely random action
         s_prime, r, done, _ = glass_bridge.step(a)
@@ -78,7 +105,7 @@ def main():
     gamma = 0.95
     episodes = 1000
     glass_bridge = GlassBridgeEnv()
-    Q = train_q_learning_agent(glass_bridge, episodes, alpha, gamma, exploration_strategy="epsilon-greedy")
+    Q = train_q_learning_agent(glass_bridge, episodes, alpha, gamma, exploration_strategy="posterior-sampling")
     # normalized_Q = normalize(Q)
     # print(normalized_Q)
 

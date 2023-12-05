@@ -40,13 +40,25 @@ def main():
     q_learning_episodes = 2000
     Q_explore = train_q_learning_agent(glass_bridge, q_learning_episodes, alpha, gamma, exploration_strategy="all-random")
 
+    # Experiment 3: Q-learning w/ softmax exploration
+    alpha = 0.1
+    gamma = 0.95
+    q_learning_episodes = 20000
+    Q_softmax = train_q_learning_agent(glass_bridge, q_learning_episodes, alpha, gamma, exploration_strategy="softmax")
+
+    # Experiment 4: Q-learning w/ posterior sampling exploration
+    alpha = 0.1
+    gamma = 0.95
+    q_learning_episodes = 3000
+    Q_posterior_sampling = train_q_learning_agent(glass_bridge, q_learning_episodes, alpha, gamma, exploration_strategy="posterior-sampling")
+
     # initialize number of wins per player position
     trial_episodes = 1020
     position_wins = {}
     for i in range(6):
         position_wins[i] = 0
 
-    for policy in ['q_epsilon_greedy', 'q_random', 'baseline']:
+    for policy in ['q_epsilon_greedy', 'q_random', 'softmax', 'posterior-sampling', 'baseline']:
         position_wins = {}
         for i in range(6):
             position_wins[i] = 0
@@ -57,6 +69,10 @@ def main():
                 ep_reward = run_episode(glass_bridge, Q_epsilon_greedy, policy)
             elif policy == 'q_random':
                 ep_reward = run_episode(glass_bridge, Q_explore, policy)
+            elif policy == 'softmax':
+                ep_reward = run_episode(glass_bridge, Q_softmax, policy)
+            elif policy == 'posterior-sampling':
+                ep_reward = run_episode(glass_bridge, Q_posterior_sampling, policy)
             elif policy == 'baseline': # dw about Q, we don't use it in run_episode
                 ep_reward = run_episode(glass_bridge, Q_explore, policy)
             
