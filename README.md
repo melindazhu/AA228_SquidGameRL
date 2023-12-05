@@ -35,8 +35,8 @@ We can view the glass bridge as a series of `n_rows_of_tiles` experiments in whi
 
 In our problem setup, we'll say that there are `N` rows of tiles and `N-2` players, just like in Squid Game. The following is a high-level overview of our project workflow: 
 - [x] Design an RL glass bridge environment that keeps track of states and actions, and simulates taking steps toward the end goal.
-- [] Train an RL agent to obtain the best `Q`, using different exploration-exploitation strategies with Q-learning and SARSA learning.
-- [] Use the learned `Q` to run the glass bridge several times, and calculate the frequency for each position in line's chance of winning.
+- [ ] Train an RL agent to obtain the best `Q`, using different exploration-exploitation strategies with Q-learning and SARSA learning.
+- [ ] Use the learned `Q` to run the glass bridge several times, and calculate the frequency for each position in line's chance of winning.
 
 ### Results Tracker
 ```
