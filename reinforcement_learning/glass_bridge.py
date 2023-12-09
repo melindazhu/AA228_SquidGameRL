@@ -9,7 +9,9 @@ ACTION_DIAGONAL = 1
 
 MAP = {
     "5x2": ["SO--G", "--OO-"],
-    "8x2": ["SO--O-O-", "--OO-O-G"]
+    "8x2": ["SO--O-O-", "--OO-O-G"],
+    "10x2": ['--------O-', 'SOOOOOOO-G'],
+    "12x2": ['--OO-O--OO-G', 'SO--O-OO--O-']
 }
 
 class GlassBridgeEnv(discrete.DiscreteEnv):
